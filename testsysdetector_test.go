@@ -14,4 +14,12 @@ func (od *TestSysDetector) ReadFile(filename string) ([]byte, error) {
 	return nil, nil
 }
 
+func (sd *TestSysDetector) Sysname() Sysname {
+	return ""
+}
+
+func (sd *TestSysDetector) RunCommand(name string, arg ...string) (string, error) {
+	return ""
+}
+
 var _ SysDetector = &TestSysDetector{}

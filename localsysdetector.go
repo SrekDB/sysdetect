@@ -2,6 +2,8 @@ package sysdetect
 
 import (
 	"io/ioutil"
+	"os/exec"
+	"strings"
 )
 
 type LocalSysDetector struct {
@@ -30,6 +32,23 @@ func (od *LocalSysDetector) ReadFile(filename string) ([]byte, error) {
 
 func (od *LocalSysDetector) Detect() SysInfo {
 	return Detect(od)
+}
+
+func (od *LocalSysDetector) Sysname() Sysname {
+	output, err := od.RunCommand("uname", "-s")
+	if err != nil {
+		return SysnameUnknown
+	}
+	return Sysname(strings.Trim(output, " \r\n"))
+}
+
+func (sd *LocalSysDetector) RunCommand(name string, arg ...string) (string, error) {
+	cmd := exec.Command(name, arg...)
+	output, err := cmd.Output()
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
 }
 
 var _ SysDetector = &LocalSysDetector{}

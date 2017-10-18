@@ -1,22 +1,23 @@
 package sysdetect
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
-	"fmt"
 )
 
 type Distribution string
 
 const (
 	DistributionDebian  Distribution = "Debian"
-	DistributionFreeBSD Distribution = "FreeBSD"
-	DistributionOSX     Distribution = "OSX"
-	DistributionMacOS   Distribution = "macOS"
+	DistributionFreeBSD              = "FreeBSD"
+	DistributionFreeNAS              = "FreeNAS"
+	DistributionMacOSX               = "Mac OS X"
 )
 
 const (
-	DistributionFileOSRelease = "/etc/os-release" // https://www.freedesktop.org/software/systemd/man/os-release.html
+	DistributionFileOSRelease           = "/etc/os-release"     // https://www.freedesktop.org/software/systemd/man/os-release.html
+	DistributionFileOSReleaseAlt        = "/usr/lib/os-release" // https://www.freedesktop.org/software/systemd/man/os-release.html
 	DistributionFileDarwinSystemVersion = "/System/Library/CoreServices/SystemVersion.plist"
 	DistributionFileDarwinServerVersion = "/System/Library/CoreServices/ServerVersion.plist"
 )
@@ -27,8 +28,10 @@ func (od Distribution) String() string {
 
 func DistributionFileParse(filename string, r io.Reader) {
 	switch filename {
+	case DistributionFileOSReleaseAlt:
+		fallthrough
 	case DistributionFileOSRelease:
-		fmt.Println("parse", DistributionFileOSRelease)
+		fmt.Println("parse", filename)
 		c, _ := ioutil.ReadAll(r)
 		fmt.Println(string(c))
 		break
